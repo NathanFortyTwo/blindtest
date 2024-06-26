@@ -1,0 +1,38 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable Audio Seek</title>
+    <style>
+        /* Hide the seek bar and disable the controls */
+        .no-skip {
+            pointer-events: none; /* Disable interaction */
+        }
+    </style>
+</head>
+<body>
+    <audio id="audioPlayer" controls>
+        <source src={%static 'audio.mp3'%} type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            // Disable the ability to skip forward
+            audioPlayer.addEventListener('timeupdate', function() {
+                if (audioPlayer.currentTime > audioPlayer.dataset.lastTime) {
+                    audioPlayer.currentTime = audioPlayer.dataset.lastTime;
+                }
+                audioPlayer.dataset.lastTime = audioPlayer.currentTime;
+            });
+
+            // Optional: Hide seek bar by applying CSS class
+            audioPlayer.classList.add('no-skip');
+        });
+    </script>
+</body>
+</html>

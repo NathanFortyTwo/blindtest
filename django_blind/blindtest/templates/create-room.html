@@ -1,0 +1,23 @@
+{%load static%}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div class="container">
+        <h1>Upload Sound Files</h1>
+        <form method="POST" action="/create/" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="user_name">Username:</label>
+            <input type="text" id="user_name" name="user_name" required>
+            <br/><br/>
+            <label>Upload musics</label>
+            <input type="file" id="fileInput" name="files" accept="audio/*" multiple>
+            <ul id="fileList" class="file-list"></ul>
+            <button id="logButton" type="submit">Créer la room</button>
+        </form>
+    </div>
+    <script src="{% static 'music_upload_script.js' %}"></script>
+</body>
+</html>

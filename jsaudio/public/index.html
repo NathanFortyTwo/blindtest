@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Audio Control</title>
+    <link rel="stylesheet" href="styles.css">
+
+
+</head>
+
+<body>
+    <p id="user">Nathan</p>
+    <audio id="audio"></audio>
+
+    <button id="controlButton" class="stop">Play</button>
+    <button id="nextButton">Next</button>
+    <script>
+        const audioFiles = [
+            '/media/music_files/{{room_number}}/audio.mp3',
+            '/media/music_files/{{room_number}}/sample.mp3'
+        ];
+
+        let currentIndex = 0;
+
+        const audio = document.getElementById('audio');
+        const controlButton = document.getElementById('controlButton');
+        const nextButton = document.getElementById('nextButton');
+        const socket = new WebSocket(`ws://localhost:3000`);
+
+        audio.src = audioFiles[currentIndex];
+
+        socket.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.action === 'toggle') {
+                    if (audio.paused) {
+                        audio.play();
+                        controlButton.classList.remove('stop');
+                        controlButton.classList.add('play');
+                        controlButton.textContent = 'Stop';
+                    } else {
+                        audio.pause();
+                        controlButton.classList.remove('play');
+                        controlButton.classList.add('stop');
+                        controlButton.textContent = 'Play';
+                    }
+                } else if (data.action === 'next') {
+                    currentIndex = (currentIndex + 1) % audioFiles.length;
+                    audio.src = audioFiles[currentIndex];
+                    audio.play();
+                    controlButton.classList.remove('stop');
+                    controlButton.classList.add('play');
+                    controlButton.textContent = 'Stop';
+                }
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        };
+
+        controlButton.addEventListener('click', () => {
+            socket.send(JSON.stringify({
+                action: 'toggle'
+            }));
+        });
+
+        controlButton.addEventListener('click', () => {
+            socket.send(JSON.stringify({
+                user: document.getElementById('user').value,
+            }));
+        });
+
+
+        nextButton.addEventListener('click', () => {
+            socket.send(JSON.stringify({
+                action: 'next'
+            }));
+        });
+    </script>
+</body>
+
+</html>

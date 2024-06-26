@@ -1,0 +1,15 @@
+{%load static%}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+
+<form method="POST">
+{% csrf_token %}
+<p>
+    <label for="id_room_number">Room number:</label>
+    <input type="text" name="room_number" required id="id_room_number">
+</p>
+  
+<p>
+    <label for="id_user_name">User name:</label>
+    <input type="text" name="user_name" required id="id_user_name">
+</p>
+<button type="submit" class="redirect-button">Join</button>

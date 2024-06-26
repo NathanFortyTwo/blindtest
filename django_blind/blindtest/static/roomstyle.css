@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+.volume-control {
+    margin: 20px;
+}
+
+.volume-control label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#volumeRange {
+    width: 200px;
+}
+
+#buzzedPlayers {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    text-align: center;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+
+button.stop:hover {
+    background-color: #c0392b;
+}
+
+button.hidden {
+    display: none;
+}
+
+button#toggleButton,
+button#nextButton,
+button#resetBuzzer,
+button#resetAudio {
+    background-color: #3498db;
+    color: #fff;
+}
+
+button#toggleButton:hover,
+button#nextButton:hover,
+button#resetBuzzer:hover,
+button#resetAudio:hover {
+    background-color: #2980b9;
+}
