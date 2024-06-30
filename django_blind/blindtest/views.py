@@ -2,10 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import MultiMusicFileForm, JoinaRoomForm
 from .models import MusicFile
 import uuid
-import urllib.parse
-import re
 import os
-import pickle
 
 
 def home(request):
@@ -74,37 +71,20 @@ def room(request, room_number):
 
     if not files:
         return redirect("/")
+    hostname = os.getenv("hostname")
+    wsport = os.getenv("wsport")
+    context = {
+        "room_number": room_number,
+        "username": request.session["user_name"],
+        "files": files,
+        "admin": admin,
+        "hostname": hostname,
+        "wsport": wsport,
+    }
+    print(context)
 
-    return render(
-        request,
-        "room.html",
-        {
-            "room_number": room_number,
-            "username": request.session["user_name"],
-            "files": files,
-            "admin": admin,
-        },
-    )
+    if admin:
+        print("he is admin")
+        return render(request, "room_admin.html", context)
 
-
-RANGE_RE = re.compile(r"bytes\s*=\s*(\d+)\s*-\s*(\d*)", re.I)
-
-
-def file_iterator(file_path, chunk_size=8192, offset=0, length=None):
-    with open(file_path, "rb") as f:
-        f.seek(offset, os.SEEK_SET)
-        remaining = length
-        while True:
-            bytes_length = (
-                chunk_size if remaining is None else min(remaining, chunk_size)
-            )
-            data = f.read(bytes_length)
-            if not data:
-                break
-            if remaining:
-                remaining -= len(data)
-            yield data
-
-
-def audio2(request):
-    return render(request, "audio.html")
+    return render(request, "room.html", context)

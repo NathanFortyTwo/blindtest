@@ -22,7 +22,9 @@ class MusicFile(models.Model):
 
 
 class Room(models.Model):
-    room_number = models.IntegerField()
+    room_number = models.CharField(
+        max_length=100,
+    )
 
     def __str__(self):
         return self.room_number
