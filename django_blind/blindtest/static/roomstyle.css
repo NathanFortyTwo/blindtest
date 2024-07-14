@@ -47,11 +47,6 @@ button {
 }
 
 
-
-button.stop:hover {
-    background-color: #c0392b;
-}
-
 button.hidden {
     display: none;
 }
@@ -69,4 +64,34 @@ button#nextButton:hover,
 button#resetBuzzer:hover,
 button#resetAudio:hover {
     background-color: #2980b9;
+}
+
+
+ul#allPlayers {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 80%;
+    max-width: 200px;
+    position: absolute;
+    top: 50%; /* Adjust as necessary */
+    right: 10px; /* Adjust as necessary */
+    transform: translateY(-50%);
+}
+
+.right{
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 80%;
+    max-width: 200px;
+    position: absolute;
+    top: 40%; 
+    right: 10px; 
+    transform: translateY(-50%);
+    font-weight: bold;
 }

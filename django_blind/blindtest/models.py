@@ -7,8 +7,8 @@ from django.db import models
 def upload_to(instance, filename):
     # Construct the upload path dynamically
     if instance.room_number:
-        return f"music_files/{instance.room_number}/{filename}"
-    return f"music_files/{filename}"
+        return f"music_files/{instance.room_number}/{instance.play_position}"
+    # return f"music_files/{filename}"
 
 
 class MusicFile(models.Model):
@@ -18,7 +18,7 @@ class MusicFile(models.Model):
     play_position = models.IntegerField(default=None, blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        return str(self.play_position)
 
 
 class Room(models.Model):

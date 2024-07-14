@@ -2,33 +2,28 @@
 
 
 <head>
-    <link rel="stylesheet" href="{% static 'roomstyle.css' %}">
+    <link rel="stylesheet" href="{% static 'roomstylev2.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time Audio Control</title>
 </head>
 
 <body>
-    THIS IS ROOM NORMAL
-    <button id="buzzer" class="stop {% if admin %}hidden{% endif %}">Buzzer</button>    
-
+    <button id="buzzer" class="buzzable {% if admin %}hidden{% endif %}">Buzzer</button>    
     <audio id="audio"></audio>
     <div id="user" class="hidden">{{username}}</div>
     <div class="volume-control">
         <label for="volumeRange">Volume:</label>
-        <input type="range" id="volumeRange" min="0" max="1" step="0.01" value="1">
+        <input type="range" id="volumeRange" min="0" max="1" step="0.01" value="0.7">
     </div>
     <div id ="roomid"> {{room_number}} </div>
-
     <div id="buzzedPlayers"></div>
-    <button id="toggleButton" class="{% if not admin %}hidden{% endif %}">Pause/Play</button>
-    <button id="nextButton" class="{% if not admin %}hidden{% endif %}" >Next Song</button>
-    <button id="resetBuzzer" class="{% if not admin %}hidden{% endif %}" >resetBuzzer</button>
-    <button id="resetAudio" class="{% if not admin %}hidden{% endif %}" >reset audio</button>
-    <div id="songname"></div>
+    <div class="right"> All players </div>
+    <ul id= "allPlayers"> </ul>
+
     <script>
         const audioFiles = [
-        {% for file in files %}
+        {% for file in ids %}
         '/media/music_files/{{room_number}}/{{file}}',
         {% endfor %}
     ];
@@ -36,21 +31,13 @@
     let currentIndex = 0;
     let buzzed_players = [];
 
-
     const audio = document.getElementById('audio');
     const buzzer = document.getElementById('buzzer');
-    const nextButton = document.getElementById('nextButton');
-    const socket = new WebSocket(`ws://localhost:3000`);
+    const socket = new WebSocket(`ws://{{hostname}}:{{wsport}}`);
     const buzzedPlayerHTML = document.getElementById('buzzedPlayers');
-    const toggleButton = document.getElementById('toggleButton');
-    const resetBuzzer = document.getElementById('resetBuzzer');
     const roomid =  document.getElementById('roomid').innerHTML;
 
     audio.src = audioFiles[currentIndex];
-    function updateSongName(){
-        document.getElementById('songname').innerHTML = audioFiles[currentIndex].split('/').pop();
-    }
-    updateSongName();
     document.addEventListener('DOMContentLoaded', function() {
         var volumeRange = document.getElementById('volumeRange');
     
@@ -61,6 +48,8 @@
 
     function fresetBuzzer(){
         buzzed_players = [];
+        buzzer.classList.remove('buzzed');
+        buzzer.classList.add('buzzable');
         displayArray(buzzed_players, 'buzzedPlayers');
     }
 
@@ -88,9 +77,8 @@
         currentIndex = (currentIndex + 1) % audioFiles.length;
         audio.src = audioFiles[currentIndex];
         audio.play();
-        buzzer.classList.remove('stop');
-        buzzer.classList.add('play');
-        buzzer.textContent = 'Stop';
+        buzzer.classList.remove('buzzed');
+        buzzer.classList.add('buzzable');
         buzzed_players = [];
         displayArray(buzzed_players, 'buzzedPlayers');
         updateSongName();
@@ -99,7 +87,8 @@
     socket.addEventListener("open", (ev) => {
         socket.send(JSON.stringify({
             type: 'join',
-            roomid : roomid
+            roomid : roomid,
+            name: "{{username}}"
         }));
     
         });
@@ -128,6 +117,18 @@
                 fresetAudio();
                 currentIndex = data.index;
             }
+            else if (data.action === "join"){
+                
+            let playerList = document.getElementById('allPlayers');
+
+            playerList.innerHTML = '';
+
+            data.players.forEach(player => {
+                let li = document.createElement('li');
+                li.textContent = player;
+                playerList.appendChild(li);
+            });
+            }
         } catch (error) {
             console.error('Error parsing JSON:', error);
         }
@@ -141,34 +142,6 @@
         }));
     });
 
-    resetBuzzer.addEventListener('click', () => {
-        socket.send(JSON.stringify({
-            type:"message",
-            action: 'resetBuzzer',
-        }));
-    });
-
-    nextButton.addEventListener('click', () => {
-        socket.send(JSON.stringify({
-            type:"message",
-            action: 'next'
-        }));
-    });
-
-    toggleButton.addEventListener('click', () => {
-        socket.send(JSON.stringify({
-            type:"message",
-            action: 'toggle'
-        }));
-    });    
-
-    resetAudio.addEventListener('click', () => {
-        socket.send(JSON.stringify({
-            type:"message",
-            action: 'resetAudio',
-            index: currentIndex
-        }));
-    });
 
     function displayArray(arr, elementId) {
         const arrayContainer = document.getElementById(elementId);

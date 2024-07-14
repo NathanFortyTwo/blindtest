@@ -1,18 +1,19 @@
-{%load static%}
-<link rel="stylesheet" href="{% static 'styles.css' %}">
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Redirects</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Turbo Blind Test</title>
+    <link rel="stylesheet" href="{% static 'stylesv2.css' %}">
 </head>
 <body>
     <div class="container">
-        <button class="redirect-button" onclick="location.href='/create'">Create Room</button>
-        <button class="redirect-button" onclick="location.href='/join'">Join Room</button>
+        <h1 class="title">Turbo Blind Test</h1>
+        <div class="button-container">
+            <button class="redirect-button" onclick="location.href='/create'">Create Room</button>
+            <button class="redirect-button" onclick="location.href='/join'">Join Room</button>
+        </div>
     </div>
 </body>
 </html>

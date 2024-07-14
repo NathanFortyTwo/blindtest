@@ -1,0 +1,125 @@
+/* roomstyle.css */
+
+/* Reset some basic elements */
+body, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+button {
+    font-size: 16px;
+    background-color:darkgray;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    width: 150px;
+    height: 150px;
+    font-size: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.buzzable {
+    background-color: #dc3545; /* Bootstrap danger color */
+    color: white;
+    width: 150px;
+    height: 150px;
+    font-size: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.buzzable:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+button.buzzable:active {
+    background-color: #bd2130;
+    transform: scale(1);
+}
+
+button.hidden {
+    display: none;
+}
+
+audio {
+    display: none;
+}
+
+#user.hidden {
+    display: none;
+}
+
+.volume-control {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.volume-control label {
+    margin-right: 10px;
+}
+
+#volumeRange {
+    width: 200px;
+}
+
+#roomid {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#buzzedPlayers {
+    margin-top: 20px;
+    width: 80%;
+    max-width: 600px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+
+ul#allPlayers {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 80%;
+    max-width: 200px;
+    position: absolute;
+    top: 50%; /* Adjust as necessary */
+    right: 10px; /* Adjust as necessary */
+    transform: translateY(-50%);
+}
+
+.right{
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    width: 80%;
+    max-width: 200px;
+    position: absolute;
+    top: 40%; 
+    right: 10px; 
+    transform: translateY(-50%);
+    font-weight: bold;
+}

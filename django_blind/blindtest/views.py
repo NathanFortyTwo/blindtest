@@ -3,6 +3,10 @@ from .forms import MultiMusicFileForm, JoinaRoomForm
 from .models import MusicFile
 import uuid
 import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from blindtest.models import MusicFile
+from django.conf import settings
 
 
 def home(request):
@@ -17,11 +21,8 @@ def create_room(request):
         files = request.FILES.getlist("files")
         if form.is_valid():
             request.session["admin"] = True
-            print(request.POST["user_name"])
             request.session["user_name"] = request.POST["user_name"]
             request.session.save()
-            print(request.session["user_name"])
-            print(list(form.cleaned_data.keys()))
             for f in files:
                 MusicFile.objects.create(
                     file=f,
@@ -42,7 +43,6 @@ def create_room(request):
         {
             "form": form,
             "session_id": request.session.session_key,
-            "user_name": request.session["user_name"],
         },
     )
 
@@ -68,6 +68,11 @@ def room(request, room_number):
     except KeyError:
         admin = False
     files = MusicFile.objects.filter(room_number=room_number)
+    titles = []
+    ids = []
+    for file in files:
+        titles.append(file.title)
+        ids.append(file.play_position)
 
     if not files:
         return redirect("/")
@@ -76,15 +81,40 @@ def room(request, room_number):
     context = {
         "room_number": room_number,
         "username": request.session["user_name"],
-        "files": files,
+        "ids": ids,
+        "titles": titles,
         "admin": admin,
         "hostname": hostname,
         "wsport": wsport,
     }
-    print(context)
 
     if admin:
-        print("he is admin")
         return render(request, "room_admin.html", context)
-
     return render(request, "room.html", context)
+
+
+@csrf_exempt
+def delete_files(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"status": "error", "message": "Invalid request method"}, status=405
+        )
+
+    api_key = request.headers.get("X-API-KEY")
+    if api_key != settings.SECRET_KEY_API:
+        return JsonResponse({"status": "error", "message": "Unauthorized"}, status=401)
+
+    room_name = request.POST.get("room_name")
+    if not room_name:
+        return JsonResponse(
+            {"status": "error", "message": "Room name not provided"}, status=400
+        )
+
+    files = MusicFile.objects.filter(room_name=room_name)
+    files.delete()
+    return JsonResponse(
+        {
+            "status": "success",
+            "message": f'Successfully deleted files for room "{room_name}"',
+        }
+    )
